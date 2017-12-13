@@ -1,0 +1,129 @@
+\documentclass[a4paper, 12pt]{article}
+ 
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc} 
+\usepackage[linesnumbered,boxed]{algorithm2e}
+\usepackage[pdftex]{graphicx} 
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[left=2cm,right=1.5cm,top=1.5cm,bottom=1.5cm]{geometry}
+ 
+ 
+\newcommand{\mtrx}[1]{\ensuremath{\begin{pmatrix}#1\end{pmatrix}}}
+\let\eps\varepsilon
+
+
+
+\author{Dmytro Fedoriaka, Oleg Gorodnitskii}
+
+\begin{document}
+
+
+\begin{center}
+
+{\Large Project proposal}
+ 
+ 
+\end{center}
+
+\bigskip
+ 
+
+
+\section{Project name.} 
+
+Optimal portfolio selection.
+
+\section{Team.}
+
+\begin{itemize}
+  \item{\textbf{Oleg Gorodnitskii}}
+	\item{\textbf{Dmytro Fedoriaka}}
+	\item{\textbf{Rasul Khasianov}}
+\end{itemize}
+
+\section{Background.}
+
+Investing is risky business. It's hard to predict how prices on market will change. Investing in several sequrities at once
+can decrease risk. We can apply theory of probability and optimization methods to find the optimal strategy, which will
+not only maximize expectation of profit, but also give guarantees about risk.
+
+\section{Problem formulation.}
+
+There is an investor. He possesses some initial wealth.
+He can allocate it on the market for one period. There are n securities (shares, currencies, etc.) available on the market. He wants to buy some of them to maximize expectation of his wealth after that period. 
+Problem is to select \textbf{optimal portfolio} – decide, how many of each security to buy.
+
+This problem consists of two parts:
+\begin{itemize}
+\item{Model (predict) changes of prices of securities, using information about them in past.}
+\item{Using model from (a), formulate and solve optimization problem.}
+\end{itemize}
+
+
+\section{Data.}
+
+We will use historical data about quotations, extracted from \cite{finam}.
+
+\section{Related work.}
+
+\textbf{Markovits theory.} We want to start with Markowitz theory of portfolio selection \cite{mark}.
+
+Let’s assume that for each paper we know profitability $r_i$ and we know matrix of correlation between profitabilities $\Sigma$.
+
+Let's denote $x_i$ --- ratio of capital invested in security $i$. Then profit is $r^Tx$ and risk is $r^T \Sigma x$.
+We can formulate problem as minimizing risk while maintaining peofit not less than given constant $p$:
+
+$$\begin{cases}
+  x^T \Sigma x \to \underset{x}{\min} \\
+	r^T x  \ge p \\
+	1^T x \le 1
+\end{cases}$$
+
+Or, we can formulate problem as maximizing profit while maintaining risk not too big:
+
+$$\begin{cases}
+  r^T x \to \underset{x}{\max} \\
+	x^T \Sigma x \le \sigma\\
+	1^T x \le 1
+\end{cases}$$
+
+Or, we can introduce regularizing paramater $\lambda$:
+
+$$\begin{cases} 
+	r^T x \Sigma x - \lambda x^T \Sigma x \to \underset{x}{\max} \\
+	1^T x \le 1
+\end{cases}$$
+
+We can see that those are LP problems. There can be some additional requirements (like we can buy only integer amount of stock).
+We plan to start with this model and than try to improve it. 
+
+
+\textbf{Prediction.} Very important is to estimate profitability of securities (which is equivalent to estimating price in 
+the end of period). For that we need to use time series prediction. We plan to start with GARCH \cite{engle}.
+
+
+\section{Scope.}
+
+The end result of the project will be an algorithm which takes as input historical data about 
+quotations of sequrities, initial capital and duration of investment period and outputs the optimal portfolio.
+
+
+\section{Evalution.}
+
+We plan to check our solution on real data: select some moment in time, build optimal portfolio. Then pretend that we have
+purchased the sequrities according to algorithm output and count resulting profit.
+
+
+\section{References}
+\def\refname{}
+\begin{thebibliography}
+{1}\bibitem{mark} Markowitz, Harry. "Portfolio selection." The journal of finance 7.1 (1952): 77-91.
+
+
+\bibitem{engle}Engle, Robert F. "Autoregressive conditional heteroscedasticity with estimates of the variance of United Kingdom inflation." Econometrica: Journal of the Econometric Society (1982): 987-1007.
+
+\bibitem{finam} {https://www.finam.ru}
+\end{thebibliography}
+\end{document}
+
